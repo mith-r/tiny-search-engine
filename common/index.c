@@ -20,6 +20,11 @@
 // Constants
 static const int numSlots = 500;
 
+// local helper functions
+static void index_printPairs(void* arg, const char* key, void* item);
+static void index_printCounters(void* arg, const int key, int item);
+static void index_countersDelete(void* arg, const char* key, void* item);
+
 
 // Global types
 typedef struct index {
@@ -145,7 +150,7 @@ index_t* index_save(FILE* fp)
 
    char *docID, *count, *word, *line; //Initialize variables
 
-   while ((line = file_readLine(fp) != NULL)) { //Read lines until done
+   while ((line = file_readLine(fp)) != NULL) { //Read lines until done
       word = strtok(line, " "); //split line by spaces
       
       if (word == NULL) { //If no words, continue;

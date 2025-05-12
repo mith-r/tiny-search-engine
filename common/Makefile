@@ -3,25 +3,26 @@
 #
 # Mithun Rmaeshkumar May 2025
 
-CC       := gcc
-CFLAGS   := -Wall -Wextra -std=c11 -pedantic -I../libcs50
-AR       := ar
-ARFLAGS  := cr
+#object files and target
+L = ../libcs50
+OBJS = pagedir.o index.o word.o 
+LIB = common.a
 
-TARGET   := common.a
-SRCS     := pagedir.c
-OBJS     := $(SRCS:.c=.o)
+CFLAGS = -Wall -pedantic -std=c11 -ggdb -I$(L) $(FLAGS)
+CC = gcc
+Make = make
 
-.PHONY: all clean
+#Build library with object files
+$(LIB): $(OBJS)
+	ar cr $(LIB) $(OBJS)
 
-all: $(TARGET)
+#Dependenceis
+pagedir.o: pagedir.h
+index.o: index.h
+word.o: word.h
 
-$(TARGET): $(OBJS)
-	$(AR) $(ARFLAGS) $@ $^
-
-# Rebuild pagedir.o if pagedir.c or its headers change
-pagedir.o: pagedir.c pagedir.h ../libcs50/webpage.h
-	$(CC) $(CFLAGS) -c pagedir.c -o pagedir.o
+.Phony: clean sourcelist
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f core
+	rm -f $(LIB) *~ *.o

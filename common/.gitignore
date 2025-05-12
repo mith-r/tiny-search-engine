@@ -1,2 +1,4 @@
 common.a
-pagedir.of
+pagedir.o
+index.o
+word.o
