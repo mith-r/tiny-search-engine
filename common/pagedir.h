@@ -36,4 +36,12 @@ bool pagedir_init(const char* pageDirectory);
  */
 void pagedir_save(const webpage_t* page, const char* pageDirectory, const int docID);
 
+/* pagedir_load()
+ *  fp: pointer to page file containing webpage data
+ *
+ * Returns pointer to new webpage data structure if successful
+ * Else returns NULL
+ */
+webpage_t* pagedir_load(FILE* fp);
+
 #endif // __PAGEDIR_H
