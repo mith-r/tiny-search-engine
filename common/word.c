@@ -16,7 +16,7 @@ void word_normalize(char* string)
 {
     // NULL check
     if (string == NULL) {
-        return NULL;
+        return;
     }
 
     //Loop through and lowercase each character
