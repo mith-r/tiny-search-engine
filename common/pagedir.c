@@ -114,3 +114,48 @@ void pagedir_save(const webpage_t* page, const char* pageDirectory, const int do
     fclose(fp);
 }
 
+/* pagedir_load()
+ * 
+ * See pagedir.h for more info
+ */
+webpage_t* pagedir_load(FILE* fp)
+{
+    //NULL check
+    if (fp == NULL) {
+        return NULL;
+    }
+
+    //Read file's URL
+    char* url = file_readLine(fp);
+    if (url == NULL) {
+        return NULL;
+    }
+
+    //Read file's depth and convert to int
+    char* charDepth = file_readLine(fp);
+    if (charDepth == NULL) {
+        mem_free(url);
+        return NULL;
+    }
+
+    int depth = atoi(charDepth);
+    mem_free(charDepth);
+
+    //Read file's html
+    char* html = file_readFile(fp);
+    if (html == NULL) {
+        mem_free(url);
+        return NULL;
+    }
+
+    //create new webpage_t
+    webpage_t* page = webpage_new(url, depth, html);
+    if (page == NULL) {
+        mem_free(url);
+        mem_free(html);
+        return NULL;
+    }
+
+    return page;
+}
+
