@@ -26,6 +26,7 @@
 
 // Constants
 static const int NUM_ARGS = 3;
+static const int MAX_LINE = 1024;
 
 //function prototypes
 static void getQueries(index_t* index, char* pageDirectory);
@@ -79,19 +80,17 @@ int main(const int argc, char* argv[])
 
 /* getQueries()
  *  index - pointer to populated index
- *  pageDirectory - the corresponding pageDirecotry
+ *  pageDirectory - the corresponding pageDirectory
  * 
  * Continuously prompts user for Queries
  *
  */
 static void getQueries(index_t* index, char* pageDirectory)
 {
-    char* line = NULL;
-    size_t len = 0;
-    ssize_t lineSize;
+    char line[MAX_LINE];
 
     printf("Query?  ");
-    while ((lineSize = getLine(&line, &len, stdin)) != -1) { //continuously get user query
+    while (fgets(line, MAX_LINE, stdin) != NULL) { //continuously get user query
         int numTokens = 0;
         char** tokenArray = tokenize(line, &numTokens); //convert string to array of tokens
         if (tokenArray == NULL) {
@@ -394,14 +393,14 @@ static char** tokenize(char* string, int* numTokens)
         }
 
         if (!(isalpha(string[i]))) {
-            printf("Error: bad character '%c' in query.\n");
+            printf("Error: bad character '%c' in query.\n", string[i]);
             return NULL;
         }
     }
 
     //Creating array of strings
     int arraySize = whitespace + 1; 
-    char** tokenArray = mem_malloc_assert(whitespace, "Out of memory for stringArray");
+    char** tokenArray = mem_malloc_assert(arraySize, "Out of memory for stringArray");
 
     int tokenCount = 0;
 
