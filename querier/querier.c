@@ -14,8 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <sys/types.h>
 #include <ctype.h>
+#include <unistd.h>  
 
 #include "hashtable.h"
 #include "mem.h"
@@ -29,6 +29,8 @@ static const int NUM_ARGS = 3;
 static const int MAX_LINE = 1024;
 
 //function prototypes
+int fileno(FILE *stream);
+static void prompt(void);
 static void getQueries(index_t* index, char* pageDirectory);
 static void getMax(void* arg, int key, int count);
 static void counterSize(void* arg, const int key, const int count);
@@ -65,10 +67,10 @@ int main(const int argc, char* argv[])
 
     //save index
     index_t* index = index_save(fp);
+    fclose(fp);
 
     if (index == NULL) {
         fprintf(stderr, "Couldn't create index from indexFIlename\n");
-        fclose(fp);
         exit(EXIT_FAILURE);
     }
 
@@ -89,27 +91,24 @@ static void getQueries(index_t* index, char* pageDirectory)
 {
     char line[MAX_LINE];
 
-    printf("Query?  ");
+    prompt();
     while (fgets(line, MAX_LINE, stdin) != NULL) { //continuously get user query
         int numTokens = 0;
         char** tokenArray = tokenize(line, &numTokens); //convert string to array of tokens
         if (tokenArray == NULL) {
-            printf("Query? ");
+            prompt();
             continue;
         }
 
         //print cleaned query
-        printf("Query:");
+        printf("Query: ");
         for (int i = 0; i < numTokens; i ++) {
             printf(" %s", tokenArray[i]);
         }
+        printf("\n");
 
         //Using index to identify documents
         counters_t* scores = identifyDocuments(tokenArray, numTokens, index);
-        if(scores == NULL) {
-            mem_free(scores);
-            continue;
-        }
 
         //Iterate through counter to find size
         int count = 0;
@@ -117,9 +116,9 @@ static void getQueries(index_t* index, char* pageDirectory)
 
         //If matches, print count line
         if (count > 0) {
-            printf("Mathches %d documents (ranked):\n", count);
+            printf("Matches %d documents (ranked):\n", count);
         } else {
-            printf("No documents math.\n");
+            printf("No documents match.\n");
         }
 
         //Loop to rank results in descending order
@@ -152,7 +151,7 @@ static void getQueries(index_t* index, char* pageDirectory)
                     exit(EXIT_FAILURE);
                 }
                 char* url = file_readLine(fp);
-                printf("score\t%-2ddoc  %-3d: %s\n", maxInt, maxKey, url);
+                printf("score %3d  doc %2d: %s\n", maxInt, maxKey, url);
 
                 //clean up;
                 mem_free(pathName);
@@ -168,7 +167,7 @@ static void getQueries(index_t* index, char* pageDirectory)
         }
         mem_free(tokenArray);
         counters_delete(scores);
-        printf("Query? ");
+        prompt();
     }
 }
 
@@ -400,7 +399,7 @@ static char** tokenize(char* string, int* numTokens)
 
     //Creating array of strings
     int arraySize = whitespace + 1; 
-    char** tokenArray = mem_malloc_assert(arraySize, "Out of memory for stringArray");
+    char** tokenArray = mem_malloc_assert(arraySize * sizeof(char*), "Out of memory for stringArray");
 
     int tokenCount = 0;
 
@@ -529,7 +528,7 @@ static void parseArgs(const int argc, char* argv[], char** pageDirectory, char**
 
     FILE* fp;
     if ((fp = fopen(pathName, "r")) == NULL) {
-        fprintf(stderr, "No /.crawler file in pageDirectory\n");
+        fprintf(stderr, "No /.crawler file in pageDirectory or invalid pageDirectory\n");
         mem_free(pathName);
         exit(EXIT_FAILURE);
     }
@@ -564,3 +563,16 @@ static void parseArgs(const int argc, char* argv[], char** pageDirectory, char**
     *indexFilename = argv[2];
 }
 
+/* prompt()
+ * 
+ * Only prompts user when entering information from a keyboard
+ * Makes output files look nicer when testing
+ *
+ */
+static void prompt(void)
+{
+  // print a prompt iff stdin is a tty (terminal)
+  if (isatty(fileno(stdin))) {
+    printf("Query? ");
+  }
+}
