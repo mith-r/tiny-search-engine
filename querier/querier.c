@@ -167,6 +167,7 @@ static void getQueries(index_t* index, char* pageDirectory)
         }
         mem_free(tokenArray);
         counters_delete(scores);
+        printf("--------------------------------------------\n");
         prompt();
     }
 }
