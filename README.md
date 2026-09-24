@@ -20,9 +20,11 @@ The repository retains the instructor-provided `libcs50-given.a`; that prebuilt
 library is platform-specific. Existing tests may reference Dartmouth course
 paths and datasets that are not bundled with this repository.
 
-## Restored history
+## History
 
-`main` starts from the completed Lab 6 submission. The original `submit4`,
-`submit5`, and `submit6` branches preserve each stage. All original commit IDs,
-authors, and timestamps are unchanged; the former main branch is preserved as
-`archive/original-main`. The documentation update is a new restoration commit.
+`main` contains the completed Lab 6 submission, with larger changes organized
+into separate implementation, testing, and documentation commits. Split changes
+retain their original commit timestamps. The original `submit4`, `submit5`, and
+`submit6` branches preserve each lab stage, including original authors and commit
+IDs. `archive/original-main` and `archive/pre-reorganization-main` retain the
+earlier main branches. Documentation updates are dated when made.
