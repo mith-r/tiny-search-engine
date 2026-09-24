@@ -25,6 +25,6 @@ paths and datasets that are not bundled with this repository.
 `main` contains the completed Lab 6 submission, with larger changes organized
 into separate implementation, testing, and documentation commits. Split changes
 retain their original commit timestamps. The original `submit4`, `submit5`, and
-`submit6` branches preserve each lab stage, including original authors and commit
-IDs. `archive/original-main` and `archive/pre-reorganization-main` retain the
+`submit6` branches preserve each lab stage and its authorship. Author emails have been corrected to link
+to `mith-r`. `archive/original-main` and `archive/pre-reorganization-main` retain the
 earlier main branches. Documentation updates are dated when made.
